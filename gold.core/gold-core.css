@@ -1,0 +1,219 @@
+body {
+  overflow: hidden;
+}
+
+/* LANDSCAPE */
+.au-pg--home {
+  font-family: monospace;
+  width: 100vh;
+  height: 100vh;
+  font-size: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background: #123
+}
+.au-pg--home:before {
+  content: '';
+  width: calc(100vw - 100vh);
+  height: 0.16667em;
+  position: absolute;
+  left: 100vh;
+  background: rgb(117, 19, 79);
+  box-shadow: 0 0.16667em 0 0 rgb(19, 117, 79),       0 0.33334em 0 0 rgb(79, 19, 117),       0 0.50001em 0 0 rgb(117, 79, 19),       0 0.66668em 0 0 rgb(79, 117, 19),       0 0.83335em 0 0 rgb(19, 79, 117);
+}
+
+.au-pg__body {
+  font-size: 1em;
+}
+
+.au-pg__soul {
+  position: absolute;
+  top: 0;
+  left: 0;
+}
+
+.au-pg__soul svg {
+  position: absolute;
+  top: 0;
+  left: 1em;
+  width: calc(100vw - 1em);
+  height: 0.16667em;
+}
+
+.au-pg__soul #au-svg--bio {
+  top: 0.16667em;
+}
+
+.au-slider {
+}
+
+.au-slider__label {
+  display: block;
+  color: #999;
+}
+
+.au-slider__input {
+  padding: 1em 0.5em;
+}
+
+@media only screen and (orientation: portrait) {
+  .au-pg--home {
+    width: 100vw;
+    height: 100vw;
+    font-size: 100vw
+  }
+  .au-pg--home:before {
+    height: calc(100vh - 100vw);
+    width: 0.16667em;
+    left: 0;
+    top: 100vw;
+    box-shadow: 0.16667em 0 0 0 rgb(19, 117, 79),         0.33334em 0 0 0 rgb(79, 19, 117),         0.50001em  0 0 0 rgb(117, 79, 19),         0.66668em 0 0 0 rgb(79, 117, 19),         0.83335em 0 0 0 rgb(19, 79, 117);
+  }
+
+  .au-pg__soul svg {
+    top: 1em;
+    left: 0.16667em;
+    width: calc(100vh - 1em);
+    height: 0.16667em;
+    -webkit-transform-origin: top left;
+    transform-origin: top left;
+    -webkit-transform: rotate(90deg);
+    transform: rotate(90deg);
+  }
+
+  .au-pg__soul #au-svg--bio {
+    top: 1em;
+    left: 0.33334em;
+  }
+}
+
+.au-cube {
+  margin: 0;
+  padding: 0;
+  width: 1em;
+  height: 1em;
+  position: relative;
+  -webkit-transform-origin: center;
+          transform-origin: center;
+  -webkit-transform-style: preserve-3d;
+          transform-style: preserve-3d;
+  overflow: hidden
+}
+
+.au-cube:focus {
+  outline: none
+}
+
+.au-cube__info {
+  position: absolute;
+  top: 0;
+  left: 1em;
+  font-weight: normal;
+  font-family: monospace;
+  font-size: 9px;
+  color: white
+}
+
+.au-orb {
+  font-family: sans-serif;
+  left: 0.5em;
+  top: 0.5em;
+  width: 0;
+  height: 0;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  position: absolute;
+  -webkit-transform-origin: 50% 50% 0;
+          transform-origin: 50% 50% 0;
+  -webkit-transform-style: preserve-3d;
+          transform-style: preserve-3d;
+  -webkit-transform: translateY(0) translateX(0);
+          transform: translateY(0) translateX(0)
+  /* transition: all 0.6s; */
+
+}
+
+.au-orb:focus {
+  outline: none
+}
+
+.au-orb__hemi {
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d
+}
+
+.au-orb__hemi:nth-child(2) {
+  -webkit-transform: rotateX(180deg);
+  transform: rotateX(180deg);
+}
+
+.au-orb__hemi:nth-child(2) .au-orb__dot {
+  /* backface-visibility: visible; */
+  width: 0.5em;
+  height: 0.5em;
+  border-width: 0.25em;
+  opacity: 0.3
+}
+
+.au-orb__face {
+  position: absolute;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  -webkit-transform-style: preserve-3d;
+  transform-style: preserve-3d
+  /* transition: all 0.3s; */
+}
+
+.au-orb__face:nth-child(2) {
+  -webkit-transform: rotateZ(60deg);
+  transform: rotateZ(60deg)
+}
+
+.au-orb__face:nth-child(3) {
+  -webkit-transform: rotateZ(120deg);
+  transform: rotateZ(120deg)
+}
+
+.au-orb__face:nth-child(4) {
+  -webkit-transform: rotateZ(180deg);
+  transform: rotateZ(180deg)
+}
+
+.au-orb__face:nth-child(5) {
+  -webkit-transform: rotateZ(240deg);
+  transform: rotateZ(240deg)
+}
+
+.au-orb__face:nth-child(6) {
+  -webkit-transform: rotateZ(300deg);
+  transform: rotateZ(300deg)
+}
+
+.au-orb__dot {
+  position: absolute;
+  color: transparent;
+  font-size: 0.05em;
+  width: 1em;
+  height: 1em;
+  border: rgba(0,0,0, 0.3) 0.25em solid;
+  border-radius: 50%;
+  -webkit-transform-origin: left;
+  transform-origin: left;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  opacity: 0.5
+}
+
+.au-orb__dot:hover {
+  background-color: red
+}
+
+.au-orb__dot:focus {
+  background-color: rgba(0,0,0,0.5) !important;
+  border-color: #FF0 !important;
+  /* border-width: 0.1em; */
+  outline: none
+}
