@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "8285650f847d6e88ef02"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "2f42886e2c14141cbc37"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -632,12 +632,14 @@
 
 	var rerun = _xstreamRun2.default.run(_main2.default, drivers);
 
-	if (true) {
-	  module.hot.accept();
-	  module.hot.dispose(function () {
-	    rerun();
-	  });
+	/*
+	if (module.hot) {
+	  module.hot.accept()
+	  module.hot.dispose(() => {
+	    rerun()
+	  })
 	}
+	*/
 
 /***/ },
 /* 2 */
