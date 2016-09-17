@@ -65,7 +65,7 @@
 /******/ 	}
 /******/ 	
 /******/ 	var hotApplyOnUpdate = true;
-/******/ 	var hotCurrentHash = "2f42886e2c14141cbc37"; // eslint-disable-line no-unused-vars
+/******/ 	var hotCurrentHash = "fb449105ab13d731a157"; // eslint-disable-line no-unused-vars
 /******/ 	var hotCurrentModuleData = {};
 /******/ 	var hotCurrentParents = []; // eslint-disable-line no-unused-vars
 /******/ 	
@@ -632,14 +632,12 @@
 
 	var rerun = _xstreamRun2.default.run(_main2.default, drivers);
 
-	/*
-	if (module.hot) {
-	  module.hot.accept()
-	  module.hot.dispose(() => {
-	    rerun()
-	  })
+	if (true) {
+	  module.hot.accept();
+	  module.hot.dispose(function () {
+	    rerun();
+	  });
 	}
-	*/
 
 /***/ },
 /* 2 */
@@ -667,8 +665,11 @@
 	function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 	var log = exports.log = {
+	  pass: console.debug.bind(console, '🜺'),
+	  fail: console.error.bind(console, '🜩'),
 	  info: console.info.bind(console, '🜚'),
-	  time: performance.now.bind(performance)
+	  warn: console.warn.bind(console, '🝆'),
+	  now: performance.now.bind(performance)
 	};
 
 	function requireSources(componentName, sources) {
@@ -27680,10 +27681,7 @@
 
 	function makeTimeContextDriver(conf) {
 	  return function timeContextDriver(timeContext$) {
-	    var epoch = +new Date();
 	    var frameRate = 1000 / 60;
-
-	    _util.log.info('epoch:', epoch);
 
 	    var context$ = _xstream2.default.periodic(frameRate).fold(function (acc, tick) {
 	      acc.frame = tick % 60;
@@ -30937,25 +30935,19 @@
 	function toCoord(ev) {
 	  var boxSize = (0, _util.climbToMatch)(ev.target, '.au-cube').clientWidth;
 	  return {
-	    x: ((ev.x / boxSize - 0.5) * 2).toFixed(2),
-	    y: ((ev.y / boxSize - 0.5) * 2).toFixed(2),
-	    at: _util.log.time()
+	    x: (ev.x / boxSize - 0.5) * 2,
+	    y: (ev.y / boxSize - 0.5) * 2,
+	    at: _util.log.now()
 	  };
 	}
 
-	// Sources => Actions (listen to user events
+	// Sources => Actions (capture useful user events)
 	function intent(sources) {
 	  var domCube = sources.DOM.select('.au-cube');
 
 	  var cubeClick$ = domCube.events('click').filter(function (click) {
 	    return click.target.classList.contains('au-cube');
 	  }).map(toCoord).startWith({ x: 0, y: 0 });
-
-	  var release$ = _xstream2.default.merge(domCube.events('mouseout'), domCube.events('mouseup'));
-
-	  var countOut$ = domCube.events('mouseout').fold(function (acc, ev) {
-	    return acc + 1;
-	  }, 0);
 
 	  var dotTap$ = domCube.events('mousedown').filter(function (click) {
 	    return click.target.classList.contains('au-orb__dot');
@@ -30964,110 +30956,58 @@
 	  var point$ = domCube.events('mousemove').map(toCoord).startWith({ x: 0, y: 0 });
 
 	  var spin$ = dotTap$.map(function (tap) {
-	    return point$.endWhen(release$);
+	    return point$.endWhen(_xstream2.default.merge(domCube.events('mouseenter').filter(function (ev) {
+	      return ev.target.classList.contains('au-cube');
+	    }), domCube.events('mouseup'), domCube.events('touchend')));
 	  }).flatten().fold(function (acc, ps) {
-	    var pos = acc.fresh ? ps : acc;
-	    _util.log.info('pos, acc, ps:', pos, acc, ps);
-	    var dur = ps.at - pos.at;
-	    var xdiff = pos.x - ps.x;
-	    var ydiff = pos.y - ps.y;
-	    var xvelo = xdiff / dur;
+	    // const pos = (acc.fresh) ? ps : acc
+	    // const dur = ps.at - pos.at
+	    // const xd = (pos.x - ps.x)
+	    // const yd = (pos.y - ps.y)
+	    // const xv = dur ? xd / dur : 0
+	    // const yv = dur ? xd / dur : 0
 
-	    _util.log.info('xvelo:', xvelo, dur, xdiff);
+	    // TODO: Leverage distance & velocity to determine multiplied difference.
 
 	    return {
-	      x: 180,
-	      y: 120,
-	      z: 60
-	    };
+	      at: ps.at,
+	      x: ps.x,
+	      y: ps.y,
+	      z: 0 };
 	  }, { x: 0, y: 0, z: 0, fresh: true }).startWith({ x: 0, y: 0, z: 0 });
 
 	  var actions = {
-	    countOut$: countOut$,
 	    cubeClick$: cubeClick$,
 	    dotTap$: dotTap$,
 	    point$: point$,
 	    spin$: spin$
 	  };
-
-	  /*
-	  spin$: domCube.events('mousedown').filter(
-	  ).map(dd => {
-	    let cubeSize = climbToMatch(dd.target, '.au-cube').clientWidth
-	    let orig = {
-	      x: (dd.x / cubeSize) - 0.5,
-	      y: (dd.y / cubeSize) - 0.5,
-	      at: +new Date,
-	    }
-	     return domCube.events('mousemove').fold((acc, mm) => {
-	      let pos = {
-	        x: (mm.x / cubeSize) - 0.5,
-	        y: (mm.y / cubeSize) - 0.5,
-	        at: +new Date,
-	      }
-	       acc.x = 360 * (orig.x - pos.x) * -1
-	      acc.y = 360 * (orig.y - pos.y) * -1
-	      acc.z += 0
-	      acc.dur = pos.at - orig.at
-	       log.info('acc:', acc)
-	       return acc
-	  */
 	  return actions;
 	}
 
-	var do_once = false;
-
-	// Actions => State (process information)
+	// Actions+Props => State (transform into values)
 	function model(actions, props$) {
-
-	  var rot$ = actions.spin$ // , actions.cubeClick$)
-	  .debug(_util.log.info).map(function (rot) {
-	    return {
-	      x: rot.x.toFixed(2),
-	      y: rot.y.toFixed(2),
-	      z: rot.z.toFixed(2)
-	    };
-	  }); // .startWith({x: 0, y: 0, z: 0})
-
-	  return _xstream2.default.combine(actions.countOut$, props$,
-
-	  // .time
-	  props$.map(function (props) {
+	  return _xstream2.default.combine(props$, props$.map(function (props) {
 	    return props.time$;
-	  }).flatten(),
-
-	  /*
-	  .map(props => {
-	    // log.info('props:', props)
+	  }).flatten(), // .time
+	  actions.spin$.map(function (spin) {
 	    return {
-	      id: props.id,
-	      time: props.time$,
-	      rot: props.rot$,
-	    }
-	  }),
-	  */
-
-	  rot$, actions.point$);
+	      x: spin.y * -1,
+	      y: spin.x * 1,
+	      z: spin.z * -1
+	    };
+	  }), actions.point$);
 	}
 
 	// ViewState => VirtualDOM (output to user)
 	function view(state$) {
 	  return state$.map(function (_ref) {
-	    var _ref2 = _slicedToArray(_ref, 5);
+	    var _ref2 = _slicedToArray(_ref, 4);
 
-	    var countOut = _ref2[0];
-	    var props = _ref2[1];
-	    var time = _ref2[2];
-	    var rot = _ref2[3];
-	    var point = _ref2[4];
-
-	    // log.info("rot (view):", rot)
-	    // log.info('timeContext:', timeContext)
-	    // time.second = 0;
-
-	    var orbStyle = {
-	      transform: '\n        rotateX(' + time.second * 30 + 'deg)\n        rotateY(' + time.second * 60 + 'deg)\n        rotateZ(' + time.second * 90 + 'deg)\n      '
-	    };
+	    var props = _ref2[0];
+	    var time = _ref2[1];
+	    var rot = _ref2[2];
+	    var point = _ref2[3];
 
 	    return (0, _dom.figure)('.au-cube.au-cube--' + props.id, {
 	      attrs: {
@@ -31077,15 +31017,14 @@
 	      attrs: {
 	        tabindex: 0
 	      },
-	      style: orbStyle
-	    }, [(0, _dom.li)('.au-orb__hemi.au-hemi--north', ["#FFF", "#AAA", "#FFF", "#AAA", "#FFF", "#AAA"].map(function (color) {
-	      return OrbFace(3, 3, color);
+	      style: {
+	        transform: '\n            rotateX(' + rot.x * 90 + 'deg)\n            rotateY(' + rot.y * 90 + 'deg)\n            rotateZ(' + rot.z * 90 + 'deg)\n          '
+	      }
+	    }, [(0, _dom.li)('.au-orb__hemi.au-hemi--north', ["#FFF", "#AAA", "#FFF", "#AAA", "#FFF", '#999'].map(function (color) {
+	      return OrbFace(6, 1.3, color);
 	    })), (0, _dom.li)('.au-orb__hemi.au-hemi--south', ["#F00", "#F0F", "#FF0", "#0FF", "#0F0", "#00F"].map(function (color) {
-	      return OrbFace(6, 1.5, color);
-	    }))]), (0, _dom.figcaption)('.au-cube__info', [(0, _dom.pre)('', 'PX ' + point.x + ' PY ' + point.y),
-	    // pre('', `X ${rot.x}\nY ${rot.y}\nZ ${rot.z}`),
-	    // pre('', `F ${time.frame}\nS ${time.second}`),
-	    (0, _dom.pre)('', 'OUTS: ' + countOut)])]);
+	      return OrbFace(6, 1.25, color);
+	    }))]), (0, _dom.figcaption)('.au-cube__info', [(0, _dom.pre)('', 'PX ' + point.x.toFixed(2) + ' PY ' + point.y.toFixed(2)), (0, _dom.pre)('', 'X ' + rot.x.toFixed(2) + '\nY ' + rot.y.toFixed(2) + '\nZ ' + rot.z), (0, _dom.pre)('', 'F ' + time.frame + '\nS ' + time.second)])]);
 	  });
 	}
 
@@ -31112,7 +31051,7 @@
 	  (0, _ramda.times)(function (row) {
 	    row += 1;
 	    var angY = 0; // Not sure if needed.
-	    var angZ = 60 / row - 0.5;
+	    var angZ = 60 / row;
 
 	    if (row > 1) {
 	      rotX -= angX;
@@ -31121,7 +31060,7 @@
 	    rotZ = 0;
 
 	    dots = (0, _ramda.concat)(dots, (0, _ramda.times)(function (col) {
-	      var transform = '\n        rotateZ(' + rotZ + 'deg)\n        rotateX(' + rotX + 'deg)\n        translateZ(' + RAD + 'em)\n      ';
+	      var transform = '\n        translateY(-0.5em)\n        rotateZ(' + rotZ + 'deg)\n        rotateX(' + rotX + 'deg)\n        translateZ(' + RAD + 'em)\n      ';
 
 	      var dot = (0, _dom.li)('.au-orb__dot', {
 	        attrs: {
@@ -31608,8 +31547,6 @@
 	function HomePage(sources) {
 	  var route$ = _xstream2.default.of('/');
 
-	  // log.info("HomePage sources:", sources)
-
 	  var timeContextProps$ = _xstream2.default.of({
 	    label: 'day #',
 	    unit: ' of 2016 ',
@@ -31622,8 +31559,6 @@
 	    DOM: sources.DOM,
 	    props: timeContextProps$
 	  });
-
-	  // log.info('time$', sources.time.context$)
 
 	  var orbCubeProps$ = _xstream2.default.of({
 	    id: 'zone',
