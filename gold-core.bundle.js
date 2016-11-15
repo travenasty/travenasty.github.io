@@ -17627,33 +17627,38 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	function makeHorizonDriver(conf) {
-	  var hz = (0, _client2.default)(conf);
-	  var hzLog = hz('log');
-
-	  // log.info('conf, hz:', conf, hz, hzLog)
-
-	  function horizonDriver(write$$) {
+	  return function () {
+	    return _xstream2.default.of([]);
+	  };
+	  /*
+	  let hz = Horizon(conf);
+	  let hzLog = hz('log')
+	   // log.info('conf, hz:', conf, hz, hzLog)
+	   function horizonDriver(write$$) {
 	    write$$.flatten().addListener({
-	      next: function next(outgoing) {
+	      next: outgoing => {
 	        // log.info('hzLog:', hzLog)
-	        var res = hzLog.store({
+	        let res = hzLog.store({
 	          date: new Date(),
 	          msg: outgoing,
 	          user: 1
-	        });
+	        })
 	        // log.warn('store res:', res)
-	        res.subscribe();
+	        res.subscribe()
 	      },
-	      error: function error(err) {
-	        _util.log.fail('hz err:', err);
+	      error: err => {
+	        log.fail('hz err:', err)
 	      },
-	      complete: function complete() {}
+	      complete: () => {},
 	    });
-
-	    return _streamConversions2.default.rx.to.xstream(hzLog.order('date', 'descending').limit(10).watch()); // .debug(log.info)
+	     return convert.rx.to.xstream(
+	      hzLog.order('date', 'descending')
+	      .limit(10)
+	      .watch()
+	    ) // .debug(log.info)
 	  }
-
-	  return horizonDriver;
+	   return horizonDriver;
+	  */
 	}
 
 /***/ },
