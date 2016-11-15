@@ -104,12 +104,12 @@
 
 	var rerun = _xstreamRun2.default.run(_main2.default, drivers);
 
-	if (false) {
-	  module.hot.accept();
-	  module.hot.dispose(function () {
-	    rerun();
-	  });
-	}
+	// if (module.hot) {
+	//   module.hot.accept()
+	//   module.hot.dispose(() => {
+	//     rerun()
+	//   })
+	// }
 
 /***/ },
 /* 2 */
